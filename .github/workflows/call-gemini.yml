@@ -19,7 +19,7 @@ jobs:
       PROJECT_ID: "gen-lang-client-0660031049"
       PROJECT_NUMBER: "878632686881"
       LOCATION: "us-central1"
-      MODEL: "gemini-1.5-flash"
+      MODEL: "gemini-1.5-flash-002"
       SERVICE_ACCOUNT_EMAIL: "github-vertex-sa@gen-lang-client-0660031049.iam.gserviceaccount.com"
       WORKLOAD_IDENTITY_POOL: "github-pool"
       WORKLOAD_IDENTITY_PROVIDER: "github-provider"
