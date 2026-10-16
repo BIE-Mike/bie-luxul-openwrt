@@ -1,0 +1,37 @@
+# Local/private material
+.DS_Store
+.env
+.env.*
+!.env.example
+/private/
+/backups/
+/downloads/
+/artifacts/
+/work/
+*.key
+*.pem
+*.p12
+*.pfx
+*.ovpn
+*.pcap
+*.pcapng
+*.bin
+*.img
+*.trx
+*.ubi
+*.ubifs
+*.itb
+*.elf
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+# OpenWrt working trees and generated outputs
+/build_dir/
+/staging_dir/
+/dl/
+/tmp/
+/bin/
+/.config
+/.config.old
+# Sanitized text build/test logs belong in logs/ and are intentionally tracked.
