@@ -1,0 +1,148 @@
+name: call-gemini
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    types: [ opened, synchronize, reopened ]
+
+jobs:
+  call-gemini:
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      issues: write
+
+    env:
+      PROJECT_ID: "gen-lang-client-0660031049"
+      PROJECT_NUMBER: "878632686881"
+      LOCATION: "us-central1"
+      MODEL: "gemini-1.5-flash"
+      SERVICE_ACCOUNT_EMAIL: "github-vertex-sa@gen-lang-client-0660031049.iam.gserviceaccount.com"
+      WORKLOAD_IDENTITY_POOL: "github-pool"
+      WORKLOAD_IDENTITY_PROVIDER: "github-provider"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Authenticate to GCP using Workload Identity
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: "projects/${{ env.PROJECT_NUMBER }}/locations/global/workloadIdentityPools/${{ env.WORKLOAD_IDENTITY_POOL }}/providers/${{ env.WORKLOAD_IDENTITY_PROVIDER }}"
+          service_account: ${{ env.SERVICE_ACCOUNT_EMAIL }}
+          token_format: "access_token"
+
+      - name: Call Gemini / Vertex AI Generative model
+        id: generate
+        run: |
+          set -euo pipefail
+
+          API="https://${LOCATION}-aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/${LOCATION}/publishers/google/models/${MODEL}:generateContent"
+          ACCESS_TOKEN="${{ steps.auth.outputs.access_token }}"
+
+          if [ -z "$ACCESS_TOKEN" ]; then
+            echo "ERROR: No access token retrieved from auth step."
+            exit 1
+          fi
+
+          PAYLOAD='{
+            "contents": [
+              {
+                "role": "user",
+                "parts": [{"text": "Summarize the repository in one paragraph."}]
+              }
+            ]
+          }'
+
+          RESPONSE_FILE=$(mktemp)
+          trap 'rm -f "$RESPONSE_FILE"' EXIT
+
+          MAX_ATTEMPTS=5
+          ATTEMPT=1
+
+          while [ "$ATTEMPT" -le "$MAX_ATTEMPTS" ]; do
+            HTTP_STATUS=$(curl -s -o "$RESPONSE_FILE" -w "%{http_code}" -X POST "$API" \
+              -H "Authorization: Bearer $ACCESS_TOKEN" \
+              -H "Accept: application/json" \
+              -H "Content-Type: application/json" \
+              -d "$PAYLOAD" || echo "000")
+
+            echo "Attempt $ATTEMPT/$MAX_ATTEMPTS - HTTP Status: $HTTP_STATUS"
+
+            if [ ! -s "$RESPONSE_FILE" ]; then
+              echo '{}' > "$RESPONSE_FILE"
+            fi
+
+            if [ "$HTTP_STATUS" -eq 200 ]; then
+              jq . "$RESPONSE_FILE"
+
+              TEXT=$(jq -r '.candidates[0].content.parts[0].text // empty' "$RESPONSE_FILE")
+
+              if [ -n "$TEXT" ]; then
+                echo "### Gemini Output" >> "$GITHUB_STEP_SUMMARY"
+                printf '%s\n' "$TEXT" >> "$GITHUB_STEP_SUMMARY"
+
+                {
+                  printf 'gemini_text<<EOF\n'
+                  printf '%s\n' "$TEXT"
+                  printf 'EOF\n'
+                } >> "$GITHUB_OUTPUT"
+              else
+                echo "gemini_text=" >> "$GITHUB_OUTPUT"
+              fi
+
+              exit 0
+            fi
+
+            jq . "$RESPONSE_FILE" 2>/dev/null || cat "$RESPONSE_FILE"
+
+            if [ "$ATTEMPT" -lt "$MAX_ATTEMPTS" ] && { [ "$HTTP_STATUS" -eq 429 ] || [[ "$HTTP_STATUS" =~ ^5 ]]; }; then
+              SLEEP=$((2 ** ATTEMPT))
+              echo "Transient error ($HTTP_STATUS). Retrying in ${SLEEP}s..."
+              sleep $SLEEP
+              ATTEMPT=$((ATTEMPT + 1))
+            else
+              echo "ERROR: Vertex AI API call failed with status $HTTP_STATUS"
+              exit 1
+            fi
+          done
+        env:
+          LOCATION: ${{ env.LOCATION }}
+          PROJECT_ID: ${{ env.PROJECT_ID }}
+          MODEL: ${{ env.MODEL }}
+
+      - name: Post or update Gemini output as PR comment
+        if: ${{ github.event_name == 'pull_request' && steps.generate.outputs.gemini_text != '' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+
+          MARKER="<!-- gemini-bot-comment -->"
+          BODY_TEXT="${{ steps.generate.outputs.gemini_text }}"
+          FULL_BODY="$(printf '%s\n\n%s' "$MARKER" "$BODY_TEXT")"
+
+          EXISTING_COMMENT_ID=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" \
+            | jq -r --arg marker "$MARKER" '.[] | select(.body | contains($marker)) | .id' | head -n1 || true)
+
+          PAYLOAD=$(jq -nc --arg body "$FULL_BODY" '{ body: $body }')
+
+          if [ -n "$EXISTING_COMMENT_ID" ]; then
+            echo "Updating existing comment id=$EXISTING_COMMENT_ID"
+            curl -s -X PATCH -H "Authorization: Bearer $GITHUB_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d "$PAYLOAD" \
+              "https://api.github.com/repos/${REPO}/issues/comments/${EXISTING_COMMENT_ID}" | jq .
+          else
+            echo "Creating new comment"
+            curl -s -X POST -H "Authorization: Bearer $GITHUB_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d "$PAYLOAD" \
+              "https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments" | jq .
+          fi
