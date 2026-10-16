@@ -49,14 +49,10 @@ jobs:
             exit 1
           fi
 
-          PAYLOAD='{
-            "contents": [
-              {
-                "role": "user",
-                "parts": [{"text": "Summarize the repository in one paragraph."}]
-              }
-            ]
-          }'
+                    README_CONTENT=$(jq -Rs '.' README.md)
+
+          PAYLOAD=$(jq -nc --arg text "Summarize this repository README in one paragraph: " --arg readme "$README_CONTENT" \
+            '{ contents: [{ role: "user", parts: [{ text: ($text + $readme) }] }] }')
 
           RESPONSE_FILE=$(mktemp)
           trap 'rm -f "$RESPONSE_FILE"' EXIT
