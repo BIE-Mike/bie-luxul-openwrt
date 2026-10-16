@@ -19,7 +19,7 @@ jobs:
       PROJECT_ID: "gen-lang-client-0660031049"
       PROJECT_NUMBER: "878632686881"
       LOCATION: "us-central1"
-      MODEL: "gemini-1.5-flash-001"
+      MODEL: "gemini-1.5-flash-002"
       SERVICE_ACCOUNT_EMAIL: "github-vertex-sa@gen-lang-client-0660031049.iam.gserviceaccount.com"
       WORKLOAD_IDENTITY_POOL: "github-pool"
       WORKLOAD_IDENTITY_PROVIDER: "github-provider"
@@ -48,11 +48,11 @@ jobs:
             exit 1
           fi
 
-          README_RAW=$(cat README.md)
+          export README_CONTENT="$(cat README.md)"
 
           PAYLOAD=$(jq -n \
             --arg prompt "Summarize this repository README in one concise paragraph:" \
-            --arg content "$README_RAW" \
+            --arg content "$README_CONTENT" \
             '{ contents: [ { role: "user", parts: [ { text: ($prompt + "\n\n" + $content) } ] } ] }')
 
           RESPONSE_FILE=$(mktemp)
