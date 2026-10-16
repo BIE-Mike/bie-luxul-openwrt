@@ -1,5 +1,12 @@
 # Luxul ABR-4500
 
+Created by: EV  
+Authorized by: MM (also known as MO)  
+Created on: 2026-10-16  
+Updated by: EV  
+Update authorized by: MM  
+Update recorded on: 2026-10-16, 2:09 PM America/Phoenix (UTC−07:00; supplied by MM)
+
 ## Reported state
 
 - OpenWrt label: **25.12.5** (maintainer-reported; runtime output and source mapping pending).

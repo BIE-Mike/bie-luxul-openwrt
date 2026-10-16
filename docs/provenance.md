@@ -1,5 +1,12 @@
 # Source provenance
 
+Created by: EV  
+Authorized by: MM (also known as MO)  
+Created on: 2026-10-16  
+Updated by: EV  
+Update authorized by: MM  
+Update recorded on: 2026-10-16, 2:09 PM America/Phoenix (UTC−07:00; supplied by MM)
+
 Documentation import date: 2026-10-16. This is not a hardware-test date.
 
 Sources available for this import:

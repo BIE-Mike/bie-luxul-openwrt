@@ -1,5 +1,12 @@
 # Luxul XWC-1000
 
+Created by: EV  
+Authorized by: MM (also known as MO)  
+Created on: 2026-10-16  
+Updated by: EV  
+Update authorized by: MM  
+Update recorded on: 2026-10-16, 2:09 PM America/Phoenix (UTC−07:00; supplied by MM)
+
 ## Reported state
 
 OpenWrt label: **25.12.2**, supplied by the maintainer. Runtime identification, source revision, image checksum, and repeatable build evidence are pending.

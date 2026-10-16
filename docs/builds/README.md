@@ -1,5 +1,12 @@
 # Reproducible builds: evidence required
 
+Created by: EV  
+Authorized by: MM (also known as MO)  
+Created on: 2026-10-16  
+Updated by: EV  
+Update authorized by: MM  
+Update recorded on: 2026-10-16, 2:09 PM America/Phoenix (UTC−07:00; supplied by MM)
+
 Status: **pending** for both devices. No source checkout, build configuration, patch set, feeds lock, commands, or complete successful build log was available for this import. The reported version labels alone are insufficient to reconstruct an image.
 
 This page defines the record needed to publish a reproducible procedure; it is not a tested build recipe.

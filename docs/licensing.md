@@ -1,5 +1,12 @@
 # Licensing status
 
+Created by: EV  
+Authorized by: MM (also known as MO)  
+Created on: 2026-10-16  
+Updated by: EV  
+Update authorized by: MM  
+Update recorded on: 2026-10-16, 2:09 PM America/Phoenix (UTC−07:00; supplied by MM)
+
 The initial repository had no license file. Selection of a license for original project documentation and future code remains pending maintainer decision; this import does not invent one.
 
 Public visibility alone does not grant broad reuse rights. Contributors must identify ownership and applicable licenses for submitted material. Preserve upstream notices and review redistribution rights before adding code, patches, excerpts, or assets.

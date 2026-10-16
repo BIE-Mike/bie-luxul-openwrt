@@ -1,5 +1,12 @@
 # ABR-4500 networking findings
 
+Created by: EV  
+Authorized by: MM (also known as MO)  
+Created on: 2026-10-16  
+Updated by: EV  
+Update authorized by: MM  
+Update recorded on: 2026-10-16, 2:09 PM America/Phoenix (UTC−07:00; supplied by MM)
+
 ## Historical report
 
 Evidence level: **reported observation**, not independently reproduced.

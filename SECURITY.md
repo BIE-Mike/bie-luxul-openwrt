@@ -1,5 +1,12 @@
 # Security
 
+Created by: EV  
+Authorized by: MM (also known as MO)  
+Created on: 2026-10-16  
+Updated by: EV  
+Update authorized by: MM  
+Update recorded on: 2026-10-16, 2:09 PM America/Phoenix (UTC−07:00; supplied by MM)
+
 ## Project status
 
 This repository is community research documentation. There are no maintained firmware releases or declared supported firmware versions in this repository. Reported runtime labels do not establish security support.

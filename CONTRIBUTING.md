@@ -1,5 +1,12 @@
 # Contributing
 
+Created by: EV  
+Authorized by: MM (also known as MO)  
+Created on: 2026-10-16  
+Updated by: EV  
+Update authorized by: MM  
+Update recorded on: 2026-10-16, 2:09 PM America/Phoenix (UTC−07:00; supplied by MM)
+
 Help make Luxul/OpenWrt research useful to other owners. Small corrections, negative results, sanitized logs, and clearly scoped questions are welcome through issues and pull requests.
 
 ## Evidence first
@@ -27,3 +34,7 @@ Use placeholders in examples. Never upload complete router backups, passwords, p
 Build scripts, patches, device trees, and flash/recovery procedures need an identified source, licensing, exact device applicability, and validation evidence before being presented as working instructions. No validated procedure exists in this initial documentation.
 
 Licensing is [pending maintainer selection](docs/licensing.md). Agree on applicable licensing before contributing substantive code or redistributable assets. Do not assume public visibility grants a license.
+
+## Attribution and naming
+
+Follow [attribution and naming conventions](docs/attribution-and-naming.md) for every new file, folder and update. Preserve creator identity, record the authorizer, and include the change date/time and timezone. EV is the assistant; MM (MO) is the maintainer. Template attribution must be replaced when recording an actual run.

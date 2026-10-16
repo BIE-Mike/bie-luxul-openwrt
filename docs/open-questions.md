@@ -1,5 +1,12 @@
 # Open questions and cautions
 
+Created by: EV  
+Authorized by: MM (also known as MO)  
+Created on: 2026-10-16  
+Updated by: EV  
+Update authorized by: MM  
+Update recorded on: 2026-10-16, 2:09 PM America/Phoenix (UTC−07:00; supplied by MM)
+
 ## Priority evidence gaps
 
 - Can runtime identification and source/image hashes substantiate 25.12.5 on ABR-4500 and 25.12.2 on XWC-1000? Are these upstream labels, custom labels, or another provenance?
